@@ -8,3 +8,10 @@ Each subfolder under `packages/` should represent **one versionable package** (f
 - **Recommendation**: document packages as you add them—their public API and how they are consumed from `apps/`, `agents/`, and `workflows/`.
 
 > _Spanish version: [README.es.md](./README.es.md)._
+
+## Packages
+
+| Package | What it is | Commands (from its folder) |
+|---|---|---|
+| [`domain/`](./domain) · `@trackflow/domain` | Milestone 2 domain logic: models, collections, search, shipping cost and carrier scoring, reports, validations | `corepack pnpm install && corepack pnpm run check` |
+| `shared/` · `@repo/shared-types` | Template shared types | — |

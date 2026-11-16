@@ -1,0 +1,4 @@
+allowBuilds:
+  esbuild: true
+# Politica de cadena de suministro (D-06): no instalar versiones con menos de 3 dias.
+minimumReleaseAge: 4320
