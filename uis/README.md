@@ -18,4 +18,5 @@ Organize `uis/` by **different concerns** — each subfolder covers a distinct a
 
 | App | Purpose | Stack | Run (from repo root) |
 |---|---|---|---|
-| [`website/`](./website) | TrackFlow public site: landing + information request form (Milestone 1) | Semantic HTML5, Tailwind CSS v4 (CLI), vanilla JavaScript | `npx http-server uis/website -p 3000 -a 0.0.0.0 -c-1` |
+| [`website/`](./website) | TrackFlow public site: landing + information request form (Milestone 1) | Semantic HTML5, Tailwind CSS v4 (CLI), vanilla JavaScript | `npx --yes http-server@14.1.1 uis/website -p 3000 -a 0.0.0.0 -c-1` |
+| [`talent-pipeline-tracker/`](./talent-pipeline-tracker) | Internal recruiting tool (Executive Assistant, Zaragoza): candidates, status/stage, notes, create/edit (Milestone 3) | Next.js 16 (App Router), React 19, TypeScript | `corepack pnpm --dir uis/talent-pipeline-tracker dev` (port 3001) |
