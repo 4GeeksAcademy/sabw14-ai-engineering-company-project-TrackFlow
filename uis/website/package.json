@@ -1,0 +1,16 @@
+{
+  "name": "@trackflow/website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sitio web publico de TrackFlow: landing page y formulario de solicitud de informacion (Hito 1).",
+  "scripts": {
+    "build": "tailwindcss -i ./src/input.css -o ./assets/css/styles.css --minify",
+    "watch": "tailwindcss -i ./src/input.css -o ./assets/css/styles.css --watch",
+    "start": "npx --yes http-server . -p 3000 -a 0.0.0.0 -c-1",
+    "dev": "npm run build && npm run start"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.5",
+    "tailwindcss": "^4.3.5"
+  }
+}

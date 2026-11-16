@@ -13,3 +13,9 @@ Organize `uis/` by **different concerns** — each subfolder covers a distinct a
 - **Recommendation**: document in this file (or in sub-READMEs) the applications you add, their objective, the technology used, and how to run them.
 
 > _Estas instrucciones también están disponibles en [español](./README.es.md)._
+
+## Applications
+
+| App | Purpose | Stack | Run (from repo root) |
+|---|---|---|---|
+| [`website/`](./website) | TrackFlow public site: landing + information request form (Milestone 1) | Semantic HTML5, Tailwind CSS v4 (CLI), vanilla JavaScript | `npx http-server uis/website -p 3000 -a 0.0.0.0 -c-1` |

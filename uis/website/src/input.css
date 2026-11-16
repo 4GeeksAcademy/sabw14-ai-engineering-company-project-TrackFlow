@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+/* Tailwind solo escanea las páginas y el JS del sitio. */
+@source not "../node_modules";
+@source not "../BRIEFING.md";
+
+/* Tokens de marca TrackFlow (se usan como utilidades: bg-brand-700, text-accent-500…). */
+@theme {
+  --color-brand-50: #eef4ff;
+  --color-brand-100: #dbe6fe;
+  --color-brand-200: #bfd3fe;
+  --color-brand-600: #1d4fd8;
+  --color-brand-700: #1a3fb0;
+  --color-brand-800: #1b358b;
+  --color-brand-900: #172554;
+  --color-brand-950: #0b1533;
+  --color-accent-400: #fbbf24;
+  --color-accent-500: #f59e0b;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
