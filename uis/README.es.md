@@ -13,3 +13,9 @@ Organiza `uis/` por **distintas áreas de la compañía** — cada subcarpeta ag
 - **Recomendación**: documenta en este archivo (o en sub-READMEs) las aplicaciones que vayas añadiendo, su objetivo, tecnología usada y cómo ejecutarlas.
 
 > _These instructions are also available in [English](./README.md)._
+
+## Aplicaciones
+
+| App | Objetivo | Tecnología | Cómo ejecutar (desde la raíz) |
+|---|---|---|---|
+| [`website/`](./website) | Sitio público de TrackFlow: landing + formulario de solicitud de información (Hito 1) | HTML5 semántico, Tailwind CSS v4 (CLI), JavaScript vanilla | `npx http-server uis/website -p 3000 -a 0.0.0.0 -c-1` |
