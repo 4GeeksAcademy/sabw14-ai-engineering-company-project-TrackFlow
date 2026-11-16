@@ -6,3 +6,10 @@ Cada subcarpeta dentro de `packages/` debería representar **un paquete versiona
 
 - **Propósito principal**: fomentar reutilización y consistencia entre todos los desarrollos de la compañía.
 - **Recomendación**: documenta los paquetes que vayas añadiendo, su API pública y cómo se consumen desde `apps/`, `agents/` y `workflows/`.
+
+## Paquetes
+
+| Paquete | Qué es | Comandos (desde su carpeta) |
+|---|---|---|
+| [`domain/`](./domain) · `@trackflow/domain` | Lógica de dominio del Hito 2: modelos, colecciones, búsquedas, costes y scoring de transportistas, reportes y validaciones | `corepack pnpm install && corepack pnpm run check` |
+| `shared/` · `@repo/shared-types` | Tipos compartidos de la plantilla | — |

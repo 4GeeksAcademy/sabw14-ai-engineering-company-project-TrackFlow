@@ -1,0 +1,19 @@
+{
+  "name": "@trackflow/domain",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Logica de dominio TrackFlow (Hito 2): modelos, colecciones, busquedas, costes, scoring de transportistas, reportes y validaciones.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/collections.test.ts tests/search.test.ts tests/transformations.test.ts tests/validations.test.ts",
+    "demo": "tsx src/demo.ts",
+    "check": "tsc --noEmit && tsx --test tests/collections.test.ts tests/search.test.ts tests/transformations.test.ts tests/validations.test.ts"
+  },
+  "packageManager": "pnpm@12.18.0",
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  }
+}
