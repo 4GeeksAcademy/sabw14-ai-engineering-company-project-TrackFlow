@@ -18,4 +18,5 @@ Organiza `uis/` por **distintas áreas de la compañía** — cada subcarpeta ag
 
 | App | Objetivo | Tecnología | Cómo ejecutar (desde la raíz) |
 |---|---|---|---|
-| [`website/`](./website) | Sitio público de TrackFlow: landing + formulario de solicitud de información (Hito 1) | HTML5 semántico, Tailwind CSS v4 (CLI), JavaScript vanilla | `npx http-server uis/website -p 3000 -a 0.0.0.0 -c-1` |
+| [`website/`](./website) | Sitio público de TrackFlow: landing + formulario de solicitud de información (Hito 1) | HTML5 semántico, Tailwind CSS v4 (CLI), JavaScript vanilla | `npx --yes http-server@14.1.1 uis/website -p 3000 -a 0.0.0.0 -c-1` |
+| [`talent-pipeline-tracker/`](./talent-pipeline-tracker) | Herramienta interna de selección (Asistente de Dirección, Zaragoza): candidaturas, estado y etapa, notas, alta y edición (Hito 3) | Next.js 16 (App Router), React 19, TypeScript | `corepack pnpm --dir uis/talent-pipeline-tracker dev` (puerto 3001) |
