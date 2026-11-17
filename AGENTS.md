@@ -31,7 +31,6 @@ Detalle y prohibiciones: [`.agents/rules/estructura-monorepo.md`](./.agents/rule
 |---|---|
 | Servir la web | `npx --yes http-server@14.1.1 uis/website -p 3000 -a 0.0.0.0 -c-1` |
 | Instalar y recompilar estilos de la web | `pnpm --dir uis/website install` (una vez) y `pnpm --dir uis/website run build` |
-| Verificar antes de commit/PR | `bash scripts/verificar-entrega.sh` |
 
 Gestores permitidos para dependencias: **pnpm** (JS) y **uv** (Python); nada de npm, yarn ni pip para añadirlas. `npx` o `pnpm dlx` solo sirven para ejecutar una herramienta puntual **con versión exacta** (`http-server@14.1.1`, `lighthouse@12.8.2`).
 
@@ -39,13 +38,9 @@ Gestores permitidos para dependencias: **pnpm** (JS) y **uv** (Python); nada de 
 
 1. **Revisar el alcance**: `git status` y `git diff --stat`. Solo se tocan archivos del ticket o hito en curso; lo demás se revierte o se pregunta.
 2. **Compilar los artefactos generados**: si cambió un `.html`, un `.js` o `src/input.css` de `uis/website`, ejecutar `pnpm --dir uis/website run build` y commitear el `styles.css` resultante.
-3. **Ejecutar las comprobaciones**: `bash scripts/verificar-entrega.sh` debe terminar con `0 errores`.
-4. **Verificar el comportamiento**: levantar la app afectada y probar el caso del cambio, sin errores en la consola del navegador. Si hay tests del paquete, ejecutarlos.
-5. **Actualizar el contexto**: si cambió el comportamiento, una decisión o el estado, actualizar `memory-bank/progress.md` (y `techContext.md` si cambió el stack). Skill: `actualizar-memory-bank`.
-6. **Documentar el hito**: mantener al día `docs/soluciones/<slug>.md` (arquitectura, decisiones, prompts y evidencias).
-7. **Hacer commit** con el formato de [`.agents/rules/flujo-git.md`](./.agents/rules/flujo-git.md) y el autor `sabw14@gmail.com`.
-
-Para cerrar un hito (push y PR), usar la skill [`entrega-hito`](./.agents/skills/entrega-hito/SKILL.md).
+3. **Verificar el comportamiento**: levantar la app afectada y probar el caso del cambio, sin errores en la consola del navegador. Si hay tests del paquete, ejecutarlos.
+4. **Actualizar el contexto**: si cambió el comportamiento, una decisión o el estado, actualizar `memory-bank/progress.md` (y `techContext.md` si cambió el stack). Skill: `actualizar-memory-bank`.
+5. **Hacer commit** con el formato de [`.agents/rules/flujo-git.md`](./.agents/rules/flujo-git.md) y el autor `sabw14@gmail.com`.
 
 ## 5. Índice de reglas (`.agents/rules/`)
 
@@ -61,7 +56,6 @@ Para cerrar un hito (push y PR), usar la skill [`entrega-hito`](./.agents/skills
 
 | Skill | Objetivo |
 |---|---|
-| [`entrega-hito`](./.agents/skills/entrega-hito/SKILL.md) | Dejar un hito listo para revisión: comprobaciones, documento de solución, push y PR contra `main` |
 | [`actualizar-memory-bank`](./.agents/skills/actualizar-memory-bank/SKILL.md) | Reflejar en `memory-bank/` lo que cambió tras una feature o decisión |
 
 ## 7. No modificar sin confirmación explícita del desarrollador

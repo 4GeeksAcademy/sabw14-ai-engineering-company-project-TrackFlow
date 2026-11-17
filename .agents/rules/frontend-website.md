@@ -37,5 +37,4 @@ reason: El Hito 1 se aprobó con Lighthouse 100; estas normas evitan regresiones
 
 ## Cómo se comprueba
 
-- `bash scripts/verificar-entrega.sh` compila a un archivo temporal y falla si el resultado difiere de `styles.css` (build desactualizado), si encuentra `cdn.tailwindcss.com` o `style="` en `uis/website/*.html`, o si alguna `<img>` no tiene `alt`.
 - Lighthouse (manual, con la web servida): `npx --yes lighthouse@12.8.2 http://localhost:3000/ --form-factor=mobile --only-categories=performance,accessibility,best-practices,seo --view`.

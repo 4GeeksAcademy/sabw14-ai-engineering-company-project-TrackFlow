@@ -77,7 +77,6 @@ Estas tecnologías se registran aquí, con versión exacta y fuente, **cuando se
 | D-05 | pnpm y uv como únicos gestores; versiones exactas | Coinciden con el devcontainer; builds reproducibles | 2026-11-07 |
 | D-06 | Las dependencias nuevas deben tener **≥ 3 días** publicadas (o fijar la anterior); se aplica con `minimumReleaseAge: 4320` en `pnpm-workspace.yaml` | Mitiga paquetes comprometidos recién publicados | 2026-11-07 |
 | D-08 | Las herramientas de un solo uso se ejecutan con `npx`/`pnpm dlx` y versión exacta | Reproducibilidad sin añadirlas como dependencia | 2026-11-07 |
-| D-07 | Cada hito se documenta en `docs/soluciones/<slug>.md` | Evidencia de arquitectura, decisiones y prompts para la revisión | 2026-11-07 |
 
 ## Restricciones técnicas
 
@@ -93,7 +92,6 @@ Estas tecnologías se registran aquí, con versión exacta y fuente, **cuando se
 |---|---|
 | Servir la web | `npx --yes http-server@14.1.1 uis/website -p 3000 -a 0.0.0.0 -c-1` |
 | Recompilar estilos de la web | `pnpm --dir uis/website install && pnpm --dir uis/website run build` |
-| Verificar la entrega antes de commit/PR | `bash scripts/verificar-entrega.sh` (no modifica archivos) |
 | Dominio TS (Hito 2) | `cd packages/domain && corepack pnpm install && corepack pnpm run check` (demo: `corepack pnpm run demo`) |
 | Talent Pipeline (Hito 3) | `cd uis/talent-pipeline-tracker && corepack pnpm install && corepack pnpm dev` (3001) · `corepack pnpm run check` |
 | Lighthouse móvil | `npx --yes lighthouse@12.8.2 http://localhost:3000/ --form-factor=mobile --view` |

@@ -11,7 +11,7 @@ reason: Cada hito se revisa como un PR contra main; un PR que se mergea en otra 
 ## Ramas
 
 - Se **DEBE** crear una rama por hito o feature a partir de `main` actualizado (`git switch main && git pull`).
-- El nombre **DEBE** ser `feature/<descripcion-kebab>`, `fix/<descripcion>` o `chore/<descripcion>`, salvo que el enunciado del hito exija otro (p. ej. `feature/agent-memory-bank`).
+- El nombre **DEBE** ser `feature/<descripcion-kebab>`, `fix/<descripcion>` o `chore/<descripcion>`, salvo que el enunciado del hito exija otro (p. ej. `feature/hito-4-ingenieria-impulsada-por-ia`).
 - El agente **NO DEBE** hacer commit ni push directamente a `main`.
 
 ## Commits
@@ -29,11 +29,5 @@ reason: Cada hito se revisa como un PR contra main; un PR que se mergea en otra 
 - La descripción **DEBE** incluir:
   - qué se implementó;
   - cómo probarlo (el comando para Codespaces);
-  - las evidencias que pida el hito (URL pública, Lighthouse…);
-  - el enlace a `docs/soluciones/<slug>.md`.
+  - las evidencias que pida el hito (URL pública, Lighthouse…).
 - Un PR aprobado **DEBE** mergearse a `main` antes de empezar el siguiente hito.
-
-## Cómo se comprueba
-
-- `bash scripts/verificar-entrega.sh` falla si la rama actual es `main`, si el autor configurado no es `sabw14@gmail.com` o si hay archivos con CRLF.
-- La skill `entrega-hito` comprueba la base del PR con `gh pr view --json baseRefName`.

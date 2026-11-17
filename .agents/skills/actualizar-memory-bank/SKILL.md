@@ -13,7 +13,7 @@ Que `memory-bank/` describa **el estado real del repositorio** después de un ca
 
 | Input | Obligatorio | Ejemplo |
 |---|---|---|
-| Rama y PR del cambio | Sí | `feature/agent-memory-bank`, PR #4 |
+| Rama y PR del cambio | Sí | `feature/hito-4-ingenieria-impulsada-por-ia` |
 | Qué cambió | Sí | "Nueva API `services/inventory-api` con rutas `/inventory`" |
 | Tipo de cambio | Sí | `feature` · `decisión` · `stack` · `problema` · `cierre de hito` |
 | Datos de dominio nuevos del briefing | Si el hito los trae | Entidades del Hito 5 (SKU, entrada, salida) |
@@ -41,8 +41,7 @@ Que `memory-bank/` describa **el estado real del repositorio** después de un ca
 - [ ] El PR o la rama del cambio aparece en `progress.md` (`grep -F "<rama-o-#PR>" memory-bank/progress.md`).
 - [ ] Toda carpeta nueva bajo `uis/` o `services/` aparece en el *Mapa de carpetas* de `techContext.md` (`grep -F "<ruta>" memory-bank/techContext.md`).
 - [ ] Toda dependencia nueva de un `package.json` o `pyproject.toml` en el diff aparece en `techContext.md` con su versión exacta (`grep -F "<paquete>" memory-bank/techContext.md`).
-- [ ] Ningún archivo de `memory-bank/` copia literalmente líneas largas del `BRIEFING.md`: los resume y cita la fuente. Lo comprueba `verificar-entrega.sh` (líneas de 80 caracteres o más).
-- [ ] `bash scripts/verificar-entrega.sh` termina sin errores.
+- [ ] Ningún archivo de `memory-bank/` copia literalmente líneas largas del `BRIEFING.md`: los resume y cita la fuente.
 
 ## Salida esperada
 

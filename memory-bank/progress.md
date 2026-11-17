@@ -1,7 +1,7 @@
 # Progress — estado del proyecto
 
 > **Actualizar en cada PR** que cambie comportamiento, añada una app o servicio, o cierre o abra un hito: mover las filas, fechar y enlazar el PR.
-> Última actualización: **2026-11-16** · rama `feature/agent-memory-bank`
+> Última actualización: **2026-11-17** · rama `feature/hito-4-ingenieria-impulsada-por-ia`
 
 ## Hecho
 
@@ -9,14 +9,14 @@
 |---|---|---|---|
 | Elige tu empresa | TrackFlow elegida; `company-choice.md` en la raíz (aprobado) | commit `54403e1` en `main` | `company-choice.md` |
 | Hito 1 · Web pública | `uis/website`: landing y formulario de leads cualificados (12 campos, validación, aviso para volúmenes de 0-100). PageSpeed/Lighthouse ≥ 80 sobre la URL pública de Codespaces | [#1](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/1) | `uis/website/README.md` |
-| Hito 2 · Scripts TypeScript | `packages/domain` (`@trackflow/domain`): modelos del briefing, colecciones, búsqueda lineal y binaria, coste y scoring de transportistas, reportes y validaciones; 43 tests. Uso de IA declarado. Pregunta abierta: `selectBestCarrier` elige UPS para Madrid | [#2](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/2) | `docs/soluciones/ai-eng-milestone-coding-fundamentals.md` |
-| Hito 3 · Talent Pipeline Tracker | `uis/talent-pipeline-tracker`: Next.js 16 + React 19 + TS contra la API de 4Geeks; filtros y búsqueda en la URL, `PATCH` de estado y etapa, notas, alta (`POST`) y edición (`PUT`); 23 tests | [#3](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/3) | `docs/soluciones/ai-eng-milestone-frontend-development.md` |
+| Hito 2 · Scripts TypeScript | `packages/domain` (`@trackflow/domain`): modelos del briefing, colecciones, búsqueda lineal y binaria, coste y scoring de transportistas, reportes y validaciones; 43 tests. Uso de IA declarado. Pregunta abierta: `selectBestCarrier` elige UPS para Madrid | [#2](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/2) | `packages/domain/README.md` |
+| Hito 3 · Talent Pipeline Tracker | `uis/talent-pipeline-tracker`: Next.js 16 + React 19 + TS contra la API de 4Geeks; filtros y búsqueda en la URL, `PATCH` de estado y etapa, notas, alta (`POST`) y edición (`PUT`); 23 tests | [#3](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/3) | `uis/talent-pipeline-tracker/README.md` |
 
 ## En curso
 
 | Hito | Alcance | Rama |
 |---|---|---|
-| Hito 4 · Ingeniería impulsada por IA | `memory-bank/`, `AGENTS.md`, `.agents/rules` (5 reglas), skills `entrega-hito` y `actualizar-memory-bank`, `scripts/verificar-entrega.sh`; `CONTEXT.md` de TrackFlow con índice para agentes, `BRIEFING.md`, `.devcontainer/` y `.gitattributes`; `uis/website` pasa a pnpm | `feature/agent-memory-bank` |
+| Hito 4 · Ingeniería impulsada por IA | `memory-bank/`, `AGENTS.md`, `.agents/rules` (5 reglas) y skill `actualizar-memory-bank` | `feature/hito-4-ingenieria-impulsada-por-ia` |
 
 ## Próximos pasos
 

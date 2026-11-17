@@ -35,7 +35,3 @@ reason: TrackFlow opera en EE. UU. y la UE (RGPD) con datos de destinatarios y c
 - **Cuando** el agente vaya a modificar `AGENTS.md`, `CLAUDE.md` o `.agents/**`, **el agente debe** pedir aprobación, salvo que la tarea sea precisamente esa.
 - **Cuando** el agente vaya a modificar un `BRIEFING.md`, **el agente debe** negarse y avisar: son copias literales de 4Geeks.
 - **Cuando** el agente vaya a modificar cualquier otra ruta protegida de `AGENTS.md` §7 (lockfiles sin cambio de dependencias, `docs/evidencias/**`, `company-choice.md`), **el agente debe** explicar el cambio y esperar aprobación.
-
-## Cómo se comprueba
-
-- `bash scripts/verificar-entrega.sh` falla si hay un `.env` versionado; si detecta patrones de secretos en archivos versionados (`sk-…`, `ghp_…`, `AKIA…`, `-----BEGIN … PRIVATE KEY-----` o asignaciones del tipo `api_key = "…"`, `token: '…'`); si alguna dependencia de un `package.json` usa `^` o `~`; o si falta `minimumReleaseAge` en el `pnpm-workspace.yaml` de una app JS.

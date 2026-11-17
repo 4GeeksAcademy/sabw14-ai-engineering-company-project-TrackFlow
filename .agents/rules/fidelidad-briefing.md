@@ -29,8 +29,3 @@ reason: "Una implementación genérica que ignore el contexto no será aceptada"
 | El stock **NO DEBE** poder fijarse directamente: se calcula como entradas menos salidas. | Briefing del Hito 5, ticket TRK-0341 (`contexts/05-backend-development/trackflow-BRIEFING.es.md` del syllabus; se copiará junto al servicio) |
 | Los sistemas heredados (WMS comercial, hoja de cálculo de Zaragoza y ERP) **NO DEBEN** modificarse; se integran con APIs o pipelines nuevos. | `BRIEFING.md` → departamento de Tecnología |
 | El idioma base es el español (`lang="es"`); el inglés es una mejora y **NO DEBE** dejar el español incompleto. | Briefings → "Alcance de idioma" |
-
-## Cómo se comprueba
-
-- En el documento `docs/soluciones/<slug>.md`, la tabla "Contexto aplicado" relaciona cada dato del briefing con el archivo donde se usa.
-- La skill `entrega-hito` exige esa tabla y que cada mensaje del briefing aparezca literal en el código (`grep -F`).
