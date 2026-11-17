@@ -1,0 +1,35 @@
+# Progress — estado del proyecto
+
+> **Actualizar en cada PR** que cambie comportamiento, añada una app o servicio, o cierre o abra un hito: mover las filas, fechar y enlazar el PR.
+> Última actualización: **2026-11-16** · rama `feature/agent-memory-bank`
+
+## Hecho
+
+| Hito | Qué quedó funcionando | PR | Documentación |
+|---|---|---|---|
+| Elige tu empresa | TrackFlow elegida; `company-choice.md` en la raíz (aprobado) | commit `54403e1` en `main` | `company-choice.md` |
+| Hito 1 · Web pública | `uis/website`: landing y formulario de leads cualificados (12 campos, validación, aviso para volúmenes de 0-100). PageSpeed/Lighthouse ≥ 80 sobre la URL pública de Codespaces | [#1](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/1) | `uis/website/README.md` |
+| Hito 2 · Scripts TypeScript | `packages/domain` (`@trackflow/domain`): modelos del briefing, colecciones, búsqueda lineal y binaria, coste y scoring de transportistas, reportes y validaciones; 43 tests. Uso de IA declarado. Pregunta abierta: `selectBestCarrier` elige UPS para Madrid | [#2](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/2) | `docs/soluciones/ai-eng-milestone-coding-fundamentals.md` |
+| Hito 3 · Talent Pipeline Tracker | `uis/talent-pipeline-tracker`: Next.js 16 + React 19 + TS contra la API de 4Geeks; filtros y búsqueda en la URL, `PATCH` de estado y etapa, notas, alta (`POST`) y edición (`PUT`); 23 tests | [#3](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/3) | `docs/soluciones/ai-eng-milestone-frontend-development.md` |
+
+## En curso
+
+| Hito | Alcance | Rama |
+|---|---|---|
+| Hito 4 · Ingeniería impulsada por IA | `memory-bank/`, `AGENTS.md`, `.agents/rules` (5 reglas), skills `entrega-hito` y `actualizar-memory-bank`, `scripts/verificar-entrega.sh`; `CONTEXT.md` de TrackFlow con índice para agentes, `BRIEFING.md`, `.devcontainer/` y `.gitattributes`; `uis/website` pasa a pnpm | `feature/agent-memory-bank` |
+
+## Próximos pasos
+
+1. Mergear el PR de este hito y entregarlo en el campus (enlace al PR, con enlace directo a `AGENTS.md`).
+2. **Propuesta de arquitectura de backend (#16)**: `docs/ARCHITECTURE_PROPOSAL.md` antes de escribir código de `services/`.
+3. **Asegurando la API (#18)**: autenticación con JWT, usuarios y perfiles en TinyDB.
+4. **Hito 5 · API de inventario** (TRK-0341, Andrés Kim): rutas bajo `/inventory`; el stock se calcula como entradas menos salidas y nunca se fija a mano.
+
+## Problemas conocidos / aprendizajes
+
+- El evento `close` de `<dialog>` puede no dispararse si la página no se está renderizando; las acciones del diálogo se resuelven en el `click` de sus botones.
+- pnpm 12 bloqueó Tailwind 4.3.5 (publicada el día anterior); se fijó la 4.3.4 y la política de 3 días quedó configurada en `uis/website/pnpm-workspace.yaml` (D-06).
+- pnpm 12 bloquea los scripts de instalación de las dependencias (`ERR_PNPM_IGNORED_BUILDS`): se permiten de forma explícita con `pnpm approve-builds <paquete>`, que lo registra en `allowBuilds` del `pnpm-workspace.yaml`.
+- El `BRIEFING.md` general nombra al CEO como "Thomas Harry" y como "Thomas Espinoza": en el código y la documentación se usa solo "Thomas" hasta que se aclare.
+- `uis/website/BRIEFING.md` enlaza a una versión en inglés que no está en el repo; se deja así porque es una copia literal.
+- Las reglas y skills de `.agents/` no las carga automáticamente ninguna herramienta: dependen de que el agente siga `AGENTS.md` §1 y §5.
