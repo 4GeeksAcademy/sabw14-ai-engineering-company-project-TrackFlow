@@ -12,7 +12,7 @@
 | Hito 2 · Scripts TypeScript | `packages/domain` (`@trackflow/domain`): modelos del briefing, colecciones, búsqueda lineal y binaria, coste y scoring de transportistas, reportes y validaciones; 43 tests. Uso de IA declarado. Pregunta abierta: `selectBestCarrier` elige UPS para Madrid | [#2](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/2) | `packages/domain/README.md` |
 | Hito 3 · Talent Pipeline Tracker | `uis/talent-pipeline-tracker`: Next.js 16 + React 19 + TS contra la API de 4Geeks; filtros y búsqueda en la URL, `PATCH` de estado y etapa, notas, alta (`POST`) y edición (`PUT`); 23 tests | [#3](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/3) | `uis/talent-pipeline-tracker/README.md` |
 | Hito 4 · Ingeniería impulsada por IA | `memory-bank/`, `AGENTS.md`, `.agents/rules` (5 reglas) y skill `actualizar-memory-bank` | [#4](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/4) | `AGENTS.md` |
-| Propuesta de arquitectura de backend (#16) | `docs/ARCHITECTURE_PROPOSAL.md` (capas por dominio, routers, CORS, variables de entorno, riesgos); `CONTEXT.md` y `BRIEFING.md` de TrackFlow; D-09 aplicada en `feature/auth-api` | [#5](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/5) | `docs/soluciones/ai-eng-architectural-proposal.md` |
+| Propuesta de arquitectura de backend (#16) | `docs/ARCHITECTURE_PROPOSAL.md` (capas por dominio, routers, CORS, variables de entorno, riesgos); `CONTEXT.md` y `BRIEFING.md` de TrackFlow; D-09 aplicada en `feature/auth-api` | [#5](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/5) | `docs/ARCHITECTURE_PROPOSAL.md` |
 
 ## En curso
 
