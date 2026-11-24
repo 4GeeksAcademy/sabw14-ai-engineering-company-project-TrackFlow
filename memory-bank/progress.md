@@ -1,7 +1,7 @@
 # Progress — estado del proyecto
 
 > **Actualizar en cada PR** que cambie comportamiento, añada una app o servicio, o cierre o abra un hito: mover las filas, fechar y enlazar el PR.
-> Última actualización: **2026-11-17** · rama `feature/hito-4-ingenieria-impulsada-por-ia`
+> Última actualización: **2026-11-17** · rama `feature/propuesta-arquitectura-backend`
 
 ## Hecho
 
@@ -11,19 +11,19 @@
 | Hito 1 · Web pública | `uis/website`: landing y formulario de leads cualificados (12 campos, validación, aviso para volúmenes de 0-100). PageSpeed/Lighthouse ≥ 80 sobre la URL pública de Codespaces | [#1](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/1) | `uis/website/README.md` |
 | Hito 2 · Scripts TypeScript | `packages/domain` (`@trackflow/domain`): modelos del briefing, colecciones, búsqueda lineal y binaria, coste y scoring de transportistas, reportes y validaciones; 43 tests. Uso de IA declarado. Pregunta abierta: `selectBestCarrier` elige UPS para Madrid | [#2](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/2) | `packages/domain/README.md` |
 | Hito 3 · Talent Pipeline Tracker | `uis/talent-pipeline-tracker`: Next.js 16 + React 19 + TS contra la API de 4Geeks; filtros y búsqueda en la URL, `PATCH` de estado y etapa, notas, alta (`POST`) y edición (`PUT`); 23 tests | [#3](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/3) | `uis/talent-pipeline-tracker/README.md` |
+| Hito 4 · Ingeniería impulsada por IA | `memory-bank/`, `AGENTS.md`, `.agents/rules` (5 reglas) y skill `actualizar-memory-bank` | [#4](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/4) | `AGENTS.md` |
 
 ## En curso
 
 | Hito | Alcance | Rama |
 |---|---|---|
-| Hito 4 · Ingeniería impulsada por IA | `memory-bank/`, `AGENTS.md`, `.agents/rules` (5 reglas) y skill `actualizar-memory-bank` | `feature/hito-4-ingenieria-impulsada-por-ia` |
+| Propuesta de arquitectura de backend (#16) | `docs/ARCHITECTURE_PROPOSAL.md`: capas por dominio en un servicio FastAPI, routers por dominio, CORS, variables de entorno y riesgos. Solo documento. Incluye `CONTEXT.md` de TrackFlow (con índice para agentes) y `BRIEFING.md`, que `AGENTS.md` manda leer | `feature/propuesta-arquitectura-backend` |
 
 ## Próximos pasos
 
-1. Mergear el PR de este hito y entregarlo en el campus (enlace al PR, con enlace directo a `AGENTS.md`).
-2. **Propuesta de arquitectura de backend (#16)**: `docs/ARCHITECTURE_PROPOSAL.md` antes de escribir código de `services/`.
-3. **Asegurando la API (#18)**: autenticación con JWT, usuarios y perfiles en TinyDB.
-4. **Hito 5 · API de inventario** (TRK-0341, Andrés Kim): rutas bajo `/inventory`; el stock se calcula como entradas menos salidas y nunca se fija a mano.
+1. Mergear el PR de este hito y entregarlo en el campus.
+2. **Asegurando la API (#18)**: autenticación con JWT, usuarios y perfiles en TinyDB, siguiendo la propuesta (D-09).
+3. **Hito 5 · API de inventario** (TRK-0341, Andrés Kim): rutas bajo `/inventory`; el stock se calcula por SKU y almacén y nunca se almacena.
 
 ## Problemas conocidos / aprendizajes
 

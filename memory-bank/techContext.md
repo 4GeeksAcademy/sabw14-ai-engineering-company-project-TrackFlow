@@ -32,7 +32,7 @@ Se desarrolla en local (Windows) y se verifica en Codespaces (Linux). Todo coman
 | `agents/` · `skills/` · `mcps/` | **Producto**: agentes, capacidades y servidores MCP para TrackFlow | Plantilla |
 | `workflows/` | Flujos n8n | Plantilla |
 | `infra/` · `scripts/` · `internal/` | Docker y despliegue · scripts auxiliares · CLIs internas | `scripts/` en uso |
-| `docs/` | Arquitectura, decisiones, `soluciones/<slug>.md` por hito, `evidencias/` | En uso |
+| `docs/` | Arquitectura, decisiones, `evidencias/` | En uso |
 | `.agents/` | **Configuración del agente de código** (reglas y skills de desarrollo). No es producto | Hito 4 |
 | `memory-bank/` | Contexto persistente del agente | Hito 4 |
 
