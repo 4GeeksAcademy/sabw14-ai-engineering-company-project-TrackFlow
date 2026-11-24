@@ -25,7 +25,8 @@ Se desarrolla en local (Windows) y se verifica en Codespaces (Linux). Todo coman
 | `uis/website` | Web pública corporativa (ruta `/`): marca y textos según `BRIEFING.md` | ✅ Hito 1 |
 | `uis/talent-pipeline-tracker` | App interna de selección (ruta exigida por el enunciado del Hito 3), puerto 3001 | ✅ Hito 3 |
 | `uis/backoffice` | App interna, con su propio layout separado del sitio público y vista de entrada en `/` | Por crear |
-| `services/<nombre>` | APIs y workers backend: un servicio por subcarpeta, con su README | Por crear (#18 auth y Hito 5) |
+| `services/` | **API principal** FastAPI en la raíz (D-09): `main.py`, `routers/`, `domain/`, `schemas.py`, `database.py` | ✅ #18 (auth); Hito 5 (inventario) |
+| `services/workers/<nombre>` | Procesos que se despliegan aparte, cada uno con su README | Futuro |
 | `packages/domain` | `@trackflow/domain`: lógica de dominio en TypeScript (Hito 2) | ✅ Hito 2 |
 | `packages/` · `shared/` | Tipos, esquemas y utilidades compartidas (`packages/shared` = `@repo/shared-types`) | Plantilla |
 | `data/` | Datos crudos, pipelines y datasets de evaluación | Plantilla |
@@ -46,6 +47,23 @@ Se desarrolla en local (Windows) y se verifica en Codespaces (Linux). Todo coman
 - **Tailwind CSS 4.3.4** con `@tailwindcss/cli`. Se compila a `assets/css/styles.css`, que va **versionado**. Los tokens de marca están en `src/input.css` (`@theme`: `brand-*`, `accent-*`).
 - Servido como estático: `npx --yes http-server@14.1.1 uis/website -p 3000 -a 0.0.0.0 -c-1`.
 - Calidad comprobada: PageSpeed/Lighthouse móvil ≥ 80 sobre la URL pública de Codespaces (captura en el [PR #1](https://github.com/4GeeksAcademy/sabw14-ai-engineering-company-project-TrackFlow/pull/1)).
+
+### `services/` — TrackFlow API (#18 auth; Hito 5 inventario)
+
+- Python **3.12** (`services/.python-version`) gestionado con **uv 0.9.5**; `[tool.uv] exclude-newer` aplica D-06 (no instala versiones de menos de 3 días). Lockfile: `services/uv.lock`.
+- Dependencias con versión exacta (`services/pyproject.toml`), fuente PyPI, verificadas el 2026-11-07:
+
+  | Paquete | Versión | Para qué |
+  |---|---|---|
+  | `fastapi[standard]` | 0.162.0 | API, `fastapi dev`, `python-multipart` (formulario OAuth2) |
+  | `tinydb` | 4.9.0 | Usuarios y perfiles (D-12) |
+  | `python-jose[cryptography]` | 3.5.0 | Firma y validación de JWT (HS256) |
+  | `libpass[bcrypt]` | 1.9.4 | Hash bcrypt (`from passlib.hash import bcrypt`); sustituye a `passlib`, sin mantenimiento |
+  | `pydantic-settings` | 2.16.2 | `config.Settings` desde `services/.env` |
+  | `email-validator` | 2.3.0 | `EmailStr` |
+  | `pytest` · `httpx` (dev) | 9.2.0 · 0.28.1 | Tests con `TestClient` |
+
+- Auth: JWT stateless sin cookies; `get_current_user` en `services/dependencies.py`; roles `admin`, `manager` y `user`.
 
 ### `packages/domain` (Hito 2)
 
@@ -77,6 +95,7 @@ Estas tecnologías se registran aquí, con versión exacta y fuente, **cuando se
 | D-05 | pnpm y uv como únicos gestores; versiones exactas | Coinciden con el devcontainer; builds reproducibles | 2026-11-07 |
 | D-06 | Las dependencias nuevas deben tener **≥ 3 días** publicadas (o fijar la anterior); se aplica con `minimumReleaseAge: 4320` en `pnpm-workspace.yaml` | Mitiga paquetes comprometidos recién publicados | 2026-11-07 |
 | D-08 | Las herramientas de un solo uso se ejecutan con `npx`/`pnpm dlx` y versión exacta | Reproducibilidad sin añadirlas como dependencia | 2026-11-07 |
+| D-09 a D-17 | Backend: API en la raíz de `services/`, capas `routers/` → `domain/` → datos, Postgres/Supabase + TinyDB, stock calculado por SKU, `422`/`400`, CORS por entorno | Detalle y motivos en [`docs/ARCHITECTURE_PROPOSAL.md`](../docs/ARCHITECTURE_PROPOSAL.md) §7 | 2026-11-07 |
 
 ## Restricciones técnicas
 
@@ -91,6 +110,10 @@ Estas tecnologías se registran aquí, con versión exacta y fuente, **cuando se
 | Qué | Comando (desde la raíz) |
 |---|---|
 | Servir la web | `npx --yes http-server@14.1.1 uis/website -p 3000 -a 0.0.0.0 -c-1` |
+| Instalar la API | `cd services && uv sync` (requiere `services/.env` con `SECRET_KEY`; ver `.env.example`) |
+| Levantar la API | `cd services && uv run fastapi dev main.py --host 0.0.0.0 --port 8000` → `/docs` |
+| Tests de la API | `cd services && uv run pytest -q` |
+| Crear el primer admin | `cd services && ADMIN_EMAIL=… ADMIN_PASSWORD=… uv run python seed_admin.py` |
 | Recompilar estilos de la web | `pnpm --dir uis/website install && pnpm --dir uis/website run build` |
 | Dominio TS (Hito 2) | `cd packages/domain && corepack pnpm install && corepack pnpm run check` (demo: `corepack pnpm run demo`) |
 | Talent Pipeline (Hito 3) | `cd uis/talent-pipeline-tracker && corepack pnpm install && corepack pnpm dev` (3001) · `corepack pnpm run check` |

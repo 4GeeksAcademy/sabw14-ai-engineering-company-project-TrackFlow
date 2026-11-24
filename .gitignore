@@ -5,3 +5,6 @@ __pycache__/
 .env.*
 !.env.example
 .DS_Store
+
+# TinyDB local (usuarios con hashes de contraseña) — R7 de la propuesta de arquitectura
+services/.data/

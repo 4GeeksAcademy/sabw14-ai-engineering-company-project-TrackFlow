@@ -17,7 +17,8 @@ reason: El tech lead pidió no crear árboles paralelos; el Hito 4 evalúa que u
    | Web pública corporativa (ruta `/`, marca y textos del `BRIEFING.md`) | `uis/website/` |
    | App interna (backoffice): layout propio separado del sitio público, vista de entrada en `/` | `uis/backoffice/` |
    | Otra interfaz (portal de seguimiento B2C, dashboards) | `uis/<nombre-kebab>/` |
-   | API REST o worker | `services/<nombre-kebab>/` (p. ej. `services/inventory-api/`) |
+   | API principal de TrackFlow (FastAPI, capas `routers/` → `domain/` → datos) | `services/` (raíz), D-09 |
+   | Worker o proceso que se despliega aparte | `services/workers/<nombre-kebab>/` |
    | Tipos, esquemas y SDK compartidos | `packages/<nombre>/` o `shared/` |
    | Datos crudos, pipelines y datasets | `data/` |
    | Agente de IA de producto | `agents/<nombre>/` (desde `agents/_template`) |

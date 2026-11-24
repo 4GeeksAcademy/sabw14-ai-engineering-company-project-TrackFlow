@@ -1,6 +1,6 @@
 # Propuesta de arquitectura de backend — TrackFlow API
 
-> **Para:** Andrés Kim (CTO) · **De:** Samuel Bolivar, TrackFlow Tech · **Estado:** borrador para revisión · **Fecha:** 2026-11-07
+> **Para:** Andrés Kim (CTO) · **De:** Samuel Bolivar, TrackFlow Tech · **Estado:** aprobada (D-09 aplicada el 2026-11-07); corregida tras leer los enunciados del Hito 5 y del proyecto de autenticación · **Fecha:** 2026-11-07
 > **Alcance:** cómo estructurar el backend antes de configurar el entorno y los primeros endpoints. Aquí no hay código: son decisiones y su razonamiento.
 > **Fuentes de negocio:**
 > - [`BRIEFING.md`](../BRIEFING.md) y [`memory-bank/projectbrief.md`](../memory-bank/projectbrief.md);
@@ -151,17 +151,19 @@ services/                          # TrackFlow API: un único servicio FastAPI
 | GET | `/inventory/products` | Lista los SKUs con `current_stock` | SKUs con `warehouse` y `current_stock: int` |
 | POST | `/inventory/products` | Registra un SKU (`warehouse` = `LA` o `ZGZ`) | `201` |
 | GET | `/inventory/products/{id}` | Un SKU con su stock actual | `404` si no existe |
-| POST | `/inventory/orders/inbound` | Recepción de mercancía (`StockEntry`, con `user_uuid` en el cuerpo) | `201` |
-| POST | `/inventory/orders/outbound` | Despacho o pérdida (`StockExit`, con `user_uuid` en el cuerpo) | `201`, `400` o `422` |
+| POST | `/inventory/orders/inbound` | Recepción de mercancía (`StockEntry`; `user_uuid` = usuario autenticado) | `201` |
+| POST | `/inventory/orders/outbound` | Despacho o pérdida (`StockExit`; `user_uuid` = usuario autenticado) | `201`, `400` o `422` |
 | GET | `/inventory/orders` | Movimientos con los datos del SKU | Entradas y salidas con `warehouse` |
 
-**Sin autenticación en el Hito 5:** el briefing no la pide y su evaluador llamará a estas rutas directamente. `user_uuid` viaja en el cuerpo, como lo define el briefing.
+**Las 6 rutas requieren autenticación** (`Depends(get_current_user)`, `401` sin token). El enunciado del Hito 5 exige autenticación en las escrituras y que `user_uuid` sea el `id` en TinyDB del usuario autenticado, nunca un dato del cuerpo. Los `GET` también se protegen: el briefing de TrackFlow no los declara públicos y exponen el stock de las marcas cliente. Así se cumple además el criterio del proyecto de autenticación de proteger al menos 5 rutas fuera de `/users` y `/auth`.
+
+> **Corrección (2026-11-07):** la primera versión decía "sin autenticación en el Hito 5" porque solo se había leído el briefing de la empresa, que no la menciona. El enunciado del hito sí la exige.
 
 ### Rutas que llegan con hitos posteriores (solo el criterio de ubicación)
 
 | Dominio | Router | Cuándo | Qué cambia |
 |---|---|---|---|
-| Autenticación | `routers/auth.py` → `/auth` | Proyecto "Asegurando la API: autenticación y restricción de rutas en FastAPI" | Se añade la dependencia de usuario y, en `/inventory`, se comprueba el rol **por endpoint** con `Depends(require_role(...))`. Roles del briefing de roles y permisos: **Empleado**, **Supervisor** y **Admin**. Desde entonces, `user_uuid` se toma del token y no del cuerpo (riesgo R4) |
+| Autenticación | `routers/auth.py` → `/auth`, `routers/users.py` → `/users`, `routers/profiles.py` → `/profiles` | Proyecto "Asegurando la API" (#18), **antes** del Hito 5 | `User` y `Profile` en TinyDB; JWT con el `id` del usuario; `get_current_user`. Roles del proyecto: `admin`, `manager`, `user`. Los permisos por rol en cada ruta son una extensión opcional (`require_role(...)`) |
 | Plataforma | `routers/health.py` → `/health` | Hito 5 | Estado de la API y de las dos persistencias, para monitorización 24/7 |
 | Leads comerciales | `routers/leads.py` → `/leads` | Sin fecha | Conectaría el formulario del Hito 1, que hoy simula el envío. Requiere su tabla y una decisión sobre datos personales (RGPD): `TODO(briefing)` |
 | Transportistas, devoluciones, seguimiento | `routers/carriers.py`, `returns.py`, `tracking.py` | Sin briefing todavía | Router y módulo de dominio nuevos, **sin modificar los existentes** |
@@ -232,7 +234,7 @@ En Codespaces la web y la API tienen **orígenes distintos**: `https://<codespac
   | Producción | `https://trackflow.com` y el dominio del backoffice |
 
 - **`allow_credentials=False`:** el backoffice se autentica con la cabecera `Authorization: Bearer`, que no necesita credenciales CORS; esas solo hacen falta con cookies. Si algún día se usan cookies, se activa y los orígenes deben seguir siendo explícitos, nunca `"*"`.
-- `allow_methods=["GET", "POST"]`, los únicos que usa la API, y `allow_headers=["Authorization", "Content-Type"]`. El *preflight* `OPTIONS` lo responde el propio middleware.
+- `allow_methods=["GET", "POST", "PUT", "DELETE"]`, los que usa la API, y `allow_headers=["Authorization", "Content-Type"]`. El *preflight* `OPTIONS` lo responde el propio middleware.
 - **Codespaces:** el puerto `8000` debe ser **Public**, desde la pestaña *Ports* o con `gh codespace ports visibility 8000:public -c $CODESPACE_NAME`. Un puerto privado responde con una redirección a un login de GitHub y el navegador lo muestra como error de CORS (riesgo R5).
 
 ### Variables de entorno
@@ -254,7 +256,7 @@ En Codespaces la web y la API tienen **orígenes distintos**: `https://<codespac
 
 | ID | Decisión | Motivo |
 |---|---|---|
-| D-09 *(propuesta)* | La API principal vive en la raíz de `services/` y los procesos aparte en `services/workers/<nombre>/`. Al aprobarla se actualizan a la vez `services/README.md`, la regla `estructura-monorepo`, y `techContext.md` (README obligatorio solo en `services/` y en cada `services/workers/*/`) | Rutas literales del briefing del Hito 5 (§3) |
+| D-09 *(aprobada 2026-11-07)* | La API principal vive en la raíz de `services/` y los procesos aparte en `services/workers/<nombre>/`. Se actualizan a la vez `services/README.md`, la regla `estructura-monorepo`, y `techContext.md` (README obligatorio solo en `services/` y en cada `services/workers/*/`) | Rutas literales del briefing del Hito 5 (§3) |
 | D-10 | Capas `routers/` → `domain/` → `models.py`/`database.py`; prohibido poner reglas de negocio en los routers | Reglas de stock en un solo lugar y testeables (§2) |
 | D-11 | FastAPI + SQLModel + Pydantic sobre Python 3.12 con uv (stack del curso y del briefing). **Propuestos**, a confirmar: `pydantic-settings`, `pytest` y Alembic. Versiones exactas registradas en `techContext.md` al instalarlas (D-05, D-06) | Entorno del devcontainer; no inventar versiones |
 | D-12 | **Postgres (Supabase)** para el inventario; **TinyDB** solo para usuarios y roles; `user_uuid` como referencia lógica, sin FK | Briefing del Hito 5: *"Sin tabla de usuarios en Supabase"* |
@@ -262,14 +264,14 @@ En Codespaces la web y la API tienen **orígenes distintos**: `https://<codespac
 | D-14 | Un movimiento cuyo `warehouse` no coincide con el del SKU se **rechaza con `400`** antes de escribir. *(Interpretación propia; el briefing no la define: a confirmar)* | Evita que una entrada de `ZGZ` sume stock a un SKU de `LA` |
 | D-15 | Una salida se valida y se escribe **en la misma transacción**, bloqueando la fila del SKU (`SELECT … FOR UPDATE`, en SQLModel con `.with_for_update()`). Como el SKU es por almacén, el bloqueo es por SKU y almacén | Evita stock negativo con salidas simultáneas (R3) |
 | D-16 | Regla 3 (`tracking_number` según `exit_type`) como validador del schema → `422`; regla 2 (stock) en el dominio → `400` | El briefing permite *"en el schema o en la lógica de la ruta"*; la forma se valida en el schema y el estado en el dominio (§4) |
-| D-17 | CORS con orígenes explícitos por entorno, `allow_credentials=False`, métodos `GET`/`POST`; configuración solo vía `Settings` | §6 |
+| D-17 | CORS con orígenes explícitos por entorno, `allow_credentials=False`, métodos `GET`/`POST`/`PUT`/`DELETE` (los que usan `/users` y `/profiles`); configuración solo vía `Settings` | §6 |
 
 ### Próximos pasos
 
-1. Revisión del CTO. Si aprueba, aplicar D-09 en los cuatro sitios y registrar D-10 a D-17 en `techContext.md`.
+1. ✅ D-09 aplicada en los cuatro sitios y D-10 a D-17 registradas en `techContext.md` (rama `feature/auth-api`).
 2. Hito 5: crear `services/` con la estructura de §3, copiar `BRIEFING.md`, `pyproject.toml`, `.env.example`, `/health` y el dominio de inventario con sus tests (`400` por stock, `422` por `tracking_number`, stock independiente de `CLT-SNK-W-42` y `CLT-SNK-W-42-Z`).
 3. Añadir una comprobación automática (CI o pre-commit) que detecte `DATABASE_URL` con credenciales y tokens JWT (`eyJ…`) fuera de `.env` (R8). Añadir `services/.data/` a `.gitignore` (R7).
-4. Proyecto de autenticación: `routers/auth.py`, `require_role(...)` por endpoint y `user_uuid` desde el token.
+4. Proyecto de autenticación (#18), **antes** que el inventario: `/auth`, `/users`, `/profiles` y `get_current_user`; el inventario toma `user_uuid` del token.
 
 ---
 
@@ -280,7 +282,7 @@ En Codespaces la web y la API tienen **orígenes distintos**: `https://<codespac
 | **R1** | **Reglas de negocio dentro de los routers** (el chequeo de stock en `routers/inventory.py`) | La misma regla se reimplementa en informes, agentes o devoluciones, con diferencias; aparecen discrepancias de stock contractuales con las marcas | Toda regla de estado en `domain/` y los routers solo traducen (D-10). En revisión de PR se rechaza un router que haga cálculos con `models`. Tests de dominio sin HTTP |
 | **R2** | **Stock persistido o mezclado entre almacenes** (columna `current_stock`, sumar movimientos de otro almacén) | Se promete stock que no está en el almacén correcto; la cifra se desincroniza de los movimientos | D-13 y D-14: una sola función de stock, sin columna, y rechazo de movimientos de otro almacén. Test con la semilla: `CLT-SNK-W-42` (LA) y `CLT-SNK-W-42-Z` (ZGZ) con stock independiente |
 | **R3** | **Carrera entre dos salidas simultáneas** que pasan el chequeo a la vez | Stock negativo pese a la regla del `400` | D-15: bloqueo de la fila y escritura en la misma transacción. Test de integración contra Postgres con dos sesiones en hilos (`TestClient` es síncrono y no lo reproduce) |
-| **R4** | **`user_uuid` sin integridad** (TinyDB frente a Postgres; en el Hito 5 viene en el cuerpo de la petición) | Movimientos firmados por usuarios inexistentes; la auditoría se rompe | En el Hito 5, el dominio comprueba que el `user_uuid` existe en TinyDB antes de escribir. Con la autenticación, se toma del token y se ignora el del cuerpo |
+| **R4** | **`user_uuid` sin integridad** (TinyDB frente a Postgres, sin FK posible) | Movimientos firmados por usuarios inexistentes o desactivados; la auditoría se rompe | `user_uuid` sale **siempre** de `get_current_user`, que lee el usuario de TinyDB y rechaza los inactivos; los schemas de entrada no aceptan `user_uuid` |
 | **R5** | **CORS y entornos distintos** (orígenes escritos a mano, `"*"`, puerto 8000 privado en Codespaces) | "Funciona en mi máquina": el formulario falla en Codespaces y en la revisión, o la API queda abierta a cualquier origen | `Settings.cors_origins` por entorno y construido desde las variables de Codespaces; pasos para hacer público el puerto en `services/README.md`. `/health` **muestra** el entorno y los orígenes cargados (no puede comprobar CORS: eso lo hace el navegador) |
 | **R6** | **Contrato roto sin versionado** (prefijos sin `/api/v1`) | Un cambio incompatible rompe la web y el backoffice a la vez | Revisar el OpenAPI en cada PR que toque `schemas.py`; montar bajo `/api/v1` en `main.py` si hace falta |
 | **R7** | **TinyDB: escrituras concurrentes y archivo en git.** FastAPI ejecuta los endpoints síncronos en un *threadpool*, y TinyDB no es seguro ante escrituras simultáneas. El archivo contiene hashes de contraseñas | JSON de usuarios corrupto, sin poder entrar a operar; hashes publicados en el repo | Un *lock* alrededor de las escrituras de TinyDB y un único proceso de la API. Archivo en `services/.data/`, añadido a `.gitignore`, con la ruta en `TINYDB_PATH` |

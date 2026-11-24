@@ -1,14 +1,11 @@
-# `services` folder
+# `services/` — TrackFlow API
 
-This folder contains **all the backend services** (APIs and background workers) related to the company for the cross-functional AI Engineering project.
+Main TrackFlow API (FastAPI). Per decision **D-09** in [`docs/ARCHITECTURE_PROPOSAL.md`](../docs/ARCHITECTURE_PROPOSAL.md) (Spanish), the root of `services/` **is** the API, organized in layers (`routers/` → `domain/` → data). Separately deployed processes will live in `services/workers/<name>/`, each with its own README.
 
-Each subfolder inside `services/` must correspond to **one specific service** (for example: `admin-api`, `data-processor-worker`) and include its own technical and functional documentation.
+Full documentation (setup, Codespaces, auth flow, tests, security): [`README.es.md`](./README.es.md).
 
-- **Main purpose**: to centralize all the backend logic, APIs, and queue consumers that support the company's use cases.
-- **Recommendation**: document in this file (or in sub-READMEs) the services you add, their objective, the technology used, and how to run them.
-
-> _Spanish version: [README.es.md](./README.es.md)._
-
-## Architecture
-
-Before creating the backend, read [`docs/ARCHITECTURE_PROPOSAL.md`](../docs/ARCHITECTURE_PROPOSAL.md) (in Spanish): layered architecture in a single FastAPI service, routers per domain, CORS and environment variables.
+```bash
+cd services && cp .env.example .env   # set SECRET_KEY
+uv sync && uv run pytest -q
+uv run fastapi dev main.py --host 0.0.0.0 --port 8000   # http://localhost:8000/docs
+```
