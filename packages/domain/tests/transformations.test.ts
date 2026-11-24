@@ -65,7 +65,7 @@ describe("scoreCarrierForShipment", () => {
 describe("selectBestCarrier", () => {
   it("regla literal del briefing: entre los de puntaje >= 50 elige el de menor coste", () => {
     // UPS no opera en España, pero suma 76.4 (>= 50) y es el más barato → la regla literal lo elige.
-    // Documentado como pregunta abierta para Ana Whitfield en docs/soluciones (no se cambia la regla).
+    // Documentado como pregunta abierta para Ana Whitfield en memory-bank/progress.md (no se cambia la regla).
     assert.deepEqual(selectBestCarrier(sampleCarriers, sampleShipment, laptop), {
       carrier: byName("UPS"),
       score: 76.4,
