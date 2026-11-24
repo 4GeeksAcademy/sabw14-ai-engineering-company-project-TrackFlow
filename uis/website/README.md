@@ -3,7 +3,6 @@
 Primer punto de contacto digital de TrackFlow (Hito 1): una landing page que presenta los servicios y un formulario que capta leads cualificados de empresas de e-commerce.
 
 - Requisitos del negocio y datos: [`BRIEFING.md`](./BRIEFING.md) (sin modificar).
-- Documentación completa de la solución: [`docs/soluciones/ai-eng-milestone-web-fundamentals.md`](../../docs/soluciones/ai-eng-milestone-web-fundamentals.md).
 
 ## Cómo ejecutar
 

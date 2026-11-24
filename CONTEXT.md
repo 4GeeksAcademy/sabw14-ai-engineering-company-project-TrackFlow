@@ -58,7 +58,6 @@
 | [`BRIEFING.md`](./BRIEFING.md) | Cuando haga falta el detalle literal de la empresa |
 | `uis/website/BRIEFING.md` | Antes de tocar la web pública |
 | [`docs/ARCHITECTURE_PROPOSAL.md`](./docs/ARCHITECTURE_PROPOSAL.md) | Antes de crear o tocar cualquier cosa en `services/` (backend) |
-| [`docs/soluciones/`](./docs/soluciones) | Para ver cómo se resolvió un hito anterior |
 
 Cuando entre una tecnología, se tome una decisión de arquitectura, se añada documentación o cambie el estado del proyecto, actualiza este índice y el `memory-bank/` (skill `actualizar-memory-bank`).
 
@@ -66,4 +65,3 @@ Cuando entre una tecnología, se tome una decisión de arquitectura, se añada d
 
 - Todo nombre de campo, valor de enumeración y mensaje visible debe salir del briefing del hito correspondiente.
 - El código va en la carpeta que corresponde (`uis/`, `services/`, `data/`, `agents/`…); ver `README.md`.
-- Cada hito documenta su solución en `docs/soluciones/<slug>.md`.
