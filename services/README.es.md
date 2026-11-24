@@ -6,3 +6,7 @@ Cada subcarpeta dentro de `services/` debe corresponder a **un servicio concreto
 
 - **Propósito principal**: centralizar toda la lógica backend, APIs y consumidores de colas que dan soporte a los casos de uso de la compañía.
 - **Recomendación**: documenta en este archivo (o en sub-READMEs) los servicios que vayas añadiendo, su objetivo, tecnología usada y cómo ejecutarlos.
+
+## Arquitectura
+
+Antes de crear el backend, lee [`docs/ARCHITECTURE_PROPOSAL.md`](../docs/ARCHITECTURE_PROPOSAL.md): arquitectura en capas en un servicio FastAPI, routers por dominio, CORS y variables de entorno.
