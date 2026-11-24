@@ -32,8 +32,9 @@ No se instala FastAPI ni se escribe código: el enunciado evalúa el razonamient
 | `database.py` con la dependencia `get_db` | §3 (se usa el nombre del briefing) |
 | Archivos `services/main.py`, `database.py`, `models.py`, `schemas.py`, `routers/inventory.py` | §3: estructura literal y conflicto D-09 |
 | Las 6 rutas bajo `/inventory` | §4: tabla literal |
-| `user_uuid` en `StockEntry` y `StockExit`; el briefing no pide autenticación | §4: el Hito 5 va **sin autenticación** y con `user_uuid` en el cuerpo; los roles llegan después |
-| Roles **Empleado**, **Supervisor** y **Admin** (briefing de roles y permisos) | §4: hitos posteriores; no se inventan roles |
+| `user_uuid` en `StockEntry` y `StockExit`; el enunciado del Hito 5 exige autenticación en las escrituras y que `user_uuid` sea el del usuario autenticado | §4: las 6 rutas de `/inventory` con `get_current_user`; `user_uuid` sale del token, nunca del cuerpo (R4) |
+| Proyecto de autenticación (#18), antes del Hito 5: `/auth`, `/users`, `/profiles`, roles `admin`, `manager` y `user` | §4: routers de auth y orden de los hitos; los permisos por rol quedan como extensión opcional |
+| `GET /inventory/orders` con los datos del SKU, sin problema N+1 (enunciado del Hito 5) | §4: tabla de rutas |
 | 2 almacenes, operación 24/7, equipo de 7 personas | §2: justificación y alternativas descartadas |
 | Formulario de leads del Hito 1 (12 campos) | §4: dominio `leads` sin fecha y con `TODO(briefing)` (datos personales) |
 
@@ -172,12 +173,23 @@ Reescribe docs/ARCHITECTURE_PROPOSAL.md aplicando la revisión:
   explícita; herramientas fuera del curso como "propuestas".
 ```
 
+### Prompt 7 — Contrastar con el material del curso
+
+**Contexto:** el repo de contenido del curso: enunciado y `.learn/` del proyecto, el enunciado del Hito 5 (`ai-eng-milestone-backend-development`), el del proyecto de autenticación (`ai-eng-user-authentication-api`) y los briefings de TrackFlow.
+
+```text
+Verifica docs/ARCHITECTURE_PROPOSAL.md contra el enunciado, la solución de referencia y el
+ejemplo de clase de ai-eng-architectural-proposal, y contra los enunciados de los proyectos
+que la propuesta anticipa (Hito 5 y autenticación), no solo contra los briefings. Señala
+cualquier contradicción con el contenido del curso y corrígela: rutas públicas y protegidas,
+origen de user_uuid, roles, métodos de CORS, orden de los hitos y referencias rotas.
+```
+
+- **Produce:** la corrección de autenticación descrita en la sección 10 y tres referencias internas arregladas: "los tres sitios" de D-09, el "script" inexistente en R9 y el backoffice "del Hito 3".
+
 ## 6. Cómo ejecutar
 
 No hay nada que ejecutar: es un documento. Se lee en GitHub o en el editor (renderiza los diagramas mermaid).
-
-```bash
-```
 
 ## 7. Verificación en Codespaces
 
@@ -224,9 +236,11 @@ No hay nada que ejecutar: es un documento. Se lee en GitHub o en el editor (rend
 
 | Fecha | Feedback (literal) | Cambio realizado | Commit / PR |
 |---|---|---|---|
-| | | | |
+| 2026-11-23 | Autoverificación contra el material del curso (prompt 7): la propuesta decía "sin autenticación en el Hito 5" con `user_uuid` en el cuerpo, y usaba los roles del briefing de roles y permisos. Los enunciados del Hito 5 y del proyecto de autenticación dicen lo contrario | Las 6 rutas de `/inventory` requieren `get_current_user` y toman `user_uuid` del token; roles `admin`, `manager` y `user`; CORS con `PUT` y `DELETE`; R4 reescrito; nota de corrección en §4. El hallazgo bloqueante de la sección 8 que pedía quitar la autenticación queda sustituido por este | rama `feature/propuesta-arquitectura-backend` |
 
 ## 11. Aprendizajes y pendientes
+
+- Un briefing de empresa no es todo el contrato: el enunciado de cada proyecto añade requisitos (aquí, la autenticación del Hito 5). Una propuesta que anticipa hitos tiene que contrastarse con sus enunciados, no solo con sus briefings.
 
 - Un briefing de un hito posterior puede contradecir una regla del repo escrita antes. La propuesta es el lugar para resolverlo de forma explícita, en lugar de que cada hito elija por su cuenta.
 - Pendiente tras la aprobación: enmendar `estructura-monorepo` (D-09) y registrar D-10 a D-17 en `techContext.md`.

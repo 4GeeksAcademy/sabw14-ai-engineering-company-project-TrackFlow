@@ -79,7 +79,7 @@ Más archivos y una indirección extra (router → dominio) para operaciones sen
 
 El monorepo reserva `services/` para APIs y workers. El briefing del Hito 5 fija archivos **directamente en `services/`**: `main.py`, `database.py` (con la dependencia `get_db`), `models.py`, `schemas.py` y `routers/inventory.py`. Propongo respetarlo literalmente: **la API principal de TrackFlow es la raíz de `services/`**.
 
-> ⚠️ **Conflicto que hay que resolver (decisión D-09, §7):** hoy el repo asume "un servicio por subcarpeta de `services/`". Lo dicen [`services/README.md`](../services/README.md), la regla [`estructura-monorepo`](../.agents/rules/estructura-monorepo.md) y `memory-bank/techContext.md`. Si se aprueba D-09, se actualizan **los cuatro** a la vez: la API va en la raíz de `services/` y los procesos que se despliegan aparte, en `services/workers/<nombre>/`. La alternativa, `services/trackflow-api/`, se aparta de las rutas que comprobará el evaluador del Hito 5.
+> ⚠️ **Conflicto que hay que resolver (decisión D-09, §7):** hoy el repo asume "un servicio por subcarpeta de `services/`". Lo dicen [`services/README.md`](../services/README.md), la regla [`estructura-monorepo`](../.agents/rules/estructura-monorepo.md) y `memory-bank/techContext.md`. Si se aprueba D-09, se actualizan **los tres** a la vez: la API va en la raíz de `services/` y los procesos que se despliegan aparte, en `services/workers/<nombre>/`. La alternativa, `services/trackflow-api/`, se aparta de las rutas que comprobará el evaluador del Hito 5.
 
 ### Estructura propuesta
 
@@ -153,7 +153,7 @@ services/                          # TrackFlow API: un único servicio FastAPI
 | GET | `/inventory/products/{id}` | Un SKU con su stock actual | `404` si no existe |
 | POST | `/inventory/orders/inbound` | Recepción de mercancía (`StockEntry`; `user_uuid` = usuario autenticado) | `201` |
 | POST | `/inventory/orders/outbound` | Despacho o pérdida (`StockExit`; `user_uuid` = usuario autenticado) | `201`, `400` o `422` |
-| GET | `/inventory/orders` | Movimientos con los datos del SKU | Entradas y salidas con `warehouse` |
+| GET | `/inventory/orders` | Movimientos con los datos del SKU, cargados en la misma consulta para evitar el problema N+1 | Entradas y salidas con `warehouse` |
 
 **Las 6 rutas requieren autenticación** (`Depends(get_current_user)`, `401` sin token). El enunciado del Hito 5 exige autenticación en las escrituras y que `user_uuid` sea el `id` en TinyDB del usuario autenticado, nunca un dato del cuerpo. Los `GET` también se protegen: el briefing de TrackFlow no los declara públicos y exponen el stock de las marcas cliente. Así se cumple además el criterio del proyecto de autenticación de proteger al menos 5 rutas fuera de `/users` y `/auth`.
 
@@ -219,7 +219,7 @@ flowchart LR
     - en `*.app.github.dev` cambia el sufijo `-3000` del host por `-8000`;
     - en `localhost` usa `http://localhost:8000`;
     - en producción usa el dominio de la API;
-  - **backoffice**: una variable de entorno de su framework, que se decidirá en el Hito 3. Si es de build (como las `NEXT_PUBLIC_*` de Next.js), queda **incrustada al compilar**, así que hay que recompilar por entorno.
+  - **backoffice**: una variable de entorno de su framework, que se elegirá al crear `uis/backoffice`. Si es de build (como las `NEXT_PUBLIC_*` de Next.js), queda **incrustada al compilar**, así que hay que recompilar por entorno.
 
 ### CORS
 
@@ -268,8 +268,8 @@ En Codespaces la web y la API tienen **orígenes distintos**: `https://<codespac
 
 ### Próximos pasos
 
-1. ✅ D-09 aplicada en los cuatro sitios y D-10 a D-17 registradas en `techContext.md` (rama `feature/auth-api`).
-2. Hito 5: crear `services/` con la estructura de §3, copiar `BRIEFING.md`, `pyproject.toml`, `.env.example`, `/health` y el dominio de inventario con sus tests (`400` por stock, `422` por `tracking_number`, stock independiente de `CLT-SNK-W-42` y `CLT-SNK-W-42-Z`).
+1. ✅ D-09 aplicada en los tres sitios y D-10 a D-17 registradas en `techContext.md` (rama `feature/auth-api`).
+2. Hito 5, después del #18: completar `services/` con la estructura de §3, copiar `BRIEFING.md`, `pyproject.toml`, `.env.example`, `/health` y el dominio de inventario con sus tests (`400` por stock, `422` por `tracking_number`, stock independiente de `CLT-SNK-W-42` y `CLT-SNK-W-42-Z`).
 3. Añadir una comprobación automática (CI o pre-commit) que detecte `DATABASE_URL` con credenciales y tokens JWT (`eyJ…`) fuera de `.env` (R8). Añadir `services/.data/` a `.gitignore` (R7).
 4. Proyecto de autenticación (#18), **antes** que el inventario: `/auth`, `/users`, `/profiles` y `get_current_user`; el inventario toma `user_uuid` del token.
 
@@ -287,4 +287,4 @@ En Codespaces la web y la API tienen **orígenes distintos**: `https://<codespac
 | **R6** | **Contrato roto sin versionado** (prefijos sin `/api/v1`) | Un cambio incompatible rompe la web y el backoffice a la vez | Revisar el OpenAPI en cada PR que toque `schemas.py`; montar bajo `/api/v1` en `main.py` si hace falta |
 | **R7** | **TinyDB: escrituras concurrentes y archivo en git.** FastAPI ejecuta los endpoints síncronos en un *threadpool*, y TinyDB no es seguro ante escrituras simultáneas. El archivo contiene hashes de contraseñas | JSON de usuarios corrupto, sin poder entrar a operar; hashes publicados en el repo | Un *lock* alrededor de las escrituras de TinyDB y un único proceso de la API. Archivo en `services/.data/`, añadido a `.gitignore`, con la ruta en `TINYDB_PATH` |
 | **R8** | **Secretos de Supabase en el código o en un frontend** | Acceso completo al inventario de todas las marcas | Solo en `services/.env` o en Codespaces secrets. Próximo paso (§7): una comprobación automática que detecte una `DATABASE_URL` con contraseña o un JWT en el código |
-| **R9** | **Carpetas fuera del mapa** mientras D-09 no esté aprobado (`backend/`, `api/` o una segunda API) | Dos lugares donde buscar código; el evaluador no encuentra `services/routers/inventory.py` | Aprobar D-09 antes del Hito 5 y actualizar a la vez el README, la regla, `techContext.md` y el script |
+| **R9** | **Carpetas fuera del mapa** mientras D-09 no esté aprobado (`backend/`, `api/` o una segunda API) | Dos lugares donde buscar código; el evaluador no encuentra `services/routers/inventory.py` | Aprobar D-09 antes del Hito 5 y actualizar a la vez el README, la regla y `techContext.md` |
