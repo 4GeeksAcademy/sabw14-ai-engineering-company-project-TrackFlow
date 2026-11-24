@@ -1,6 +1,6 @@
 # Propuesta de arquitectura de backend — TrackFlow API
 
-> **Para:** Andrés Kim (CTO) · **De:** Samuel Bolivar, TrackFlow Tech · **Estado:** borrador para revisión; corregido tras leer los enunciados del Hito 5 y del proyecto de autenticación · **Fecha:** 2026-11-07
+> **Para:** Andrés Kim (CTO) · **De:** Samuel Bolivar, TrackFlow Tech · **Estado:** aprobada (D-09 aplicada el 2026-11-07); corregida tras leer los enunciados del Hito 5 y del proyecto de autenticación · **Fecha:** 2026-11-07
 > **Alcance:** cómo estructurar el backend antes de configurar el entorno y los primeros endpoints. Aquí no hay código: son decisiones y su razonamiento.
 > **Fuentes de negocio:**
 > - [`BRIEFING.md`](../BRIEFING.md) y [`memory-bank/projectbrief.md`](../memory-bank/projectbrief.md);
@@ -92,7 +92,7 @@ services/                          # TrackFlow API: un único servicio FastAPI
 ├── main.py                        # crea FastAPI(), registra CORS y los routers; sin lógica
 ├── config.py                      # Settings (pydantic-settings) + get_settings() cacheado
 ├── database.py                    # engine SQLModel (Postgres/Supabase) + get_db; cliente TinyDB
-├── dependencies.py                # dependencias compartidas: DbDep, usuario actual, require_role(...)
+├── dependencies.py                # dependencias compartidas: DbDep, usuario actual, require_roles(...)
 ├── models.py                      # tablas SQLModel: SKU, StockEntry, StockExit (nombres del briefing)
 ├── schemas.py                     # contratos Pydantic: entrada (con validadores) y salida (SKURead + current_stock)
 ├── routers/                       # CAPA API: un APIRouter por dominio
@@ -163,7 +163,7 @@ services/                          # TrackFlow API: un único servicio FastAPI
 
 | Dominio | Router | Cuándo | Qué cambia |
 |---|---|---|---|
-| Autenticación | `routers/auth.py` → `/auth`, `routers/users.py` → `/users`, `routers/profiles.py` → `/profiles` | Proyecto "Asegurando la API" (#18), **antes** del Hito 5 | `User` y `Profile` en TinyDB; JWT con el `id` del usuario; `get_current_user`. Roles del proyecto: `admin`, `manager`, `user`. Los permisos por rol en cada ruta son una extensión opcional (`require_role(...)`) |
+| Autenticación | `routers/auth.py` → `/auth`, `routers/users.py` → `/users`, `routers/profiles.py` → `/profiles` | Proyecto "Asegurando la API" (#18), **antes** del Hito 5 | `User` y `Profile` en TinyDB; JWT con el `id` del usuario; `get_current_user`. Roles del proyecto: `admin`, `manager`, `user`. Los permisos por rol en cada ruta son una extensión opcional (`require_roles(...)`) |
 | Plataforma | `routers/health.py` → `/health` | Hito 5 | Estado de la API y de las dos persistencias, para monitorización 24/7 |
 | Leads comerciales | `routers/leads.py` → `/leads` | Sin fecha | Conectaría el formulario del Hito 1, que hoy simula el envío. Requiere su tabla y una decisión sobre datos personales (RGPD): `TODO(briefing)` |
 | Transportistas, devoluciones, seguimiento | `routers/carriers.py`, `returns.py`, `tracking.py` | Sin briefing todavía | Router y módulo de dominio nuevos, **sin modificar los existentes** |
@@ -179,7 +179,7 @@ FastAPI genera el esquema **OpenAPI** (`/openapi.json`) y la documentación inte
 | Convención | Fuente | Cómo se aplica aquí |
 |---|---|---|
 | Rutas en módulos con `APIRouter` (`prefix`, `tags`, `dependencies`) registrados en `main.py` con `include_router`; estructura `app/main.py`, `app/dependencies.py`, `app/routers/*.py` | FastAPI, [*Bigger Applications — Multiple Files*](https://fastapi.tiangolo.com/tutorial/bigger-applications/) | `services/main.py`, `services/dependencies.py`, `services/routers/<dominio>.py` |
-| Dependency injection con `Depends` para lo compartido | FastAPI, [*Dependencies*](https://fastapi.tiangolo.com/tutorial/dependencies/) | `dependencies.py`: sesión, usuario y `require_role(...)`. Las dependencias que **devuelven** algo (usuario, sesión) se declaran en el endpoint; las de solo control se pueden poner a nivel de router |
+| Dependency injection con `Depends` para lo compartido | FastAPI, [*Dependencies*](https://fastapi.tiangolo.com/tutorial/dependencies/) | `dependencies.py`: sesión, usuario y `require_roles(...)`. Las dependencias que **devuelven** algo (usuario, sesión) se declaran en el endpoint; las de solo control se pueden poner a nivel de router |
 | Configuración con `BaseSettings` de `pydantic-settings`, `.env` con `SettingsConfigDict(env_file=".env")` y `get_settings()` con `@lru_cache`, sobreescribible en tests | FastAPI, [*Settings and Environment Variables*](https://fastapi.tiangolo.com/advanced/settings/) | `config.py`: nada de `os.getenv` disperso |
 | SQLModel como ORM; una sesión por petición con una dependencia que hace `yield`; modelos separados para la **tabla** y para la **entrada y salida** (`HeroBase`/`Hero`/`HeroCreate`/`HeroPublic`); el `id` lo decide el backend | FastAPI, [*SQL (Relational) Databases*](https://fastapi.tiangolo.com/tutorial/sql-databases/) | `database.py` (`get_db` con `yield`), `models.py` (tablas) frente a `schemas.py` (contratos). `current_stock` solo existe en el schema de respuesta, como pide el briefing |
 | Plantilla full-stack oficial: `backend/app/` con `api/routes/` (un archivo por recurso) y `core/` (`config.py`, `db.py`, `security.py`), con `frontend/` como app aparte en el mismo repo | [fastapi/full-stack-fastapi-template](https://github.com/fastapi/full-stack-fastapi-template) | Confirma el **monorepo con frontend y backend separados** (`uis/` + `services/`) y la separación de configuración, seguridad y rutas. Nos apartamos en el prefijo `/api/v1` (§4) |
@@ -246,6 +246,7 @@ En Codespaces la web y la API tienen **orígenes distintos**: `https://<codespac
 | `TINYDB_PATH` | API → usuarios | `services/.data/users.json` (ignorada por git) |
 | `CORS_ORIGINS` | API | `http://localhost:3000,http://localhost:3001` |
 | `SECRET_KEY` | API → tokens (hitos de auth) | `cambia-esto-en-local` |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | API → caducidad del token (#18) | `60` |
 
 - Los valores reales van en `services/.env` (ignorado por git) o en **Codespaces secrets**. `.env.example` solo lleva nombres con valores ficticios (regla [`dependencias-y-secretos`](../.agents/rules/dependencias-y-secretos.md)).
 - La **clave de servicio de Supabase** y `DATABASE_URL` solo las conoce `services/`. Ningún frontend recibe credenciales de base de datos.
@@ -256,7 +257,7 @@ En Codespaces la web y la API tienen **orígenes distintos**: `https://<codespac
 
 | ID | Decisión | Motivo |
 |---|---|---|
-| D-09 *(propuesta)* | La API principal vive en la raíz de `services/` y los procesos aparte en `services/workers/<nombre>/`. Al aprobarla se actualizan a la vez `services/README.md`, la regla `estructura-monorepo`, y `techContext.md` (README obligatorio solo en `services/` y en cada `services/workers/*/`) | Rutas literales del briefing del Hito 5 (§3) |
+| D-09 *(aprobada 2026-11-07)* | La API principal vive en la raíz de `services/` y los procesos aparte en `services/workers/<nombre>/`. Se actualizan a la vez `services/README.md`, la regla `estructura-monorepo`, y `techContext.md` (README obligatorio solo en `services/` y en cada `services/workers/*/`) | Rutas literales del briefing del Hito 5 (§3) |
 | D-10 | Capas `routers/` → `domain/` → `models.py`/`database.py`; prohibido poner reglas de negocio en los routers | Reglas de stock en un solo lugar y testeables (§2) |
 | D-11 | FastAPI + SQLModel + Pydantic sobre Python 3.12 con uv (stack del curso y del briefing). **Propuestos**, a confirmar: `pydantic-settings`, `pytest` y Alembic. Versiones exactas registradas en `techContext.md` al instalarlas (D-05, D-06) | Entorno del devcontainer; no inventar versiones |
 | D-12 | **Postgres (Supabase)** para el inventario; **TinyDB** solo para usuarios y roles; `user_uuid` como referencia lógica, sin FK | Briefing del Hito 5: *"Sin tabla de usuarios en Supabase"* |
@@ -268,7 +269,7 @@ En Codespaces la web y la API tienen **orígenes distintos**: `https://<codespac
 
 ### Próximos pasos
 
-1. Revisión del CTO. Si aprueba, aplicar D-09 en los tres sitios y registrar D-10 a D-17 en `techContext.md`.
+1. ✅ D-09 aplicada en los tres sitios y D-10 a D-17 registradas en `techContext.md` (rama `feature/auth-api`).
 2. Hito 5, después del #18: completar `services/` con la estructura de §3, copiar `BRIEFING.md`, `pyproject.toml`, `.env.example`, `/health` y el dominio de inventario con sus tests (`400` por stock, `422` por `tracking_number`, stock independiente de `CLT-SNK-W-42` y `CLT-SNK-W-42-Z`).
 3. Añadir una comprobación automática (CI o pre-commit) que detecte `DATABASE_URL` con credenciales y tokens JWT (`eyJ…`) fuera de `.env` (R8). Añadir `services/.data/` a `.gitignore` (R7).
 4. Proyecto de autenticación (#18), **antes** que el inventario: `/auth`, `/users`, `/profiles` y `get_current_user`; el inventario toma `user_uuid` del token.

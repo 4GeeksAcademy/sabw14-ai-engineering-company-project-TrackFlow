@@ -1,0 +1,5 @@
+# Saltos de linea LF en el repo (Codespaces / Linux), sin importar el SO local
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.ico binary
