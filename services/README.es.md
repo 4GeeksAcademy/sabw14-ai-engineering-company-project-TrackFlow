@@ -31,17 +31,18 @@ services/
 
 ```bash
 cd services
-cp .env.example .env
-uv run python -c "import secrets; print(secrets.token_urlsafe(48))"   # pégalo en SECRET_KEY
+cp .env.example .env    # la plantilla no lleva valores reales; se rellenan en .env
+uv run python -c "import secrets; print(secrets.token_urlsafe(48))"   # pégalo en SECRET_KEY de services/.env
 uv sync
 ```
 
-En Codespaces, define `SECRET_KEY` como **Codespaces secret** (Settings → Codespaces → Secrets) en lugar de escribirla en `.env`.
+`.env.example` solo contiene los nombres de las variables. Los valores reales van en `services/.env`, que está en `.gitignore`. En Codespaces, define `SECRET_KEY` como **Codespaces secret** (Settings → Codespaces → Secrets) en lugar de escribirla en `.env`.
 
 ```bash
-# Primer admin (el registro público crea siempre rol "user")
-# Pon ADMIN_EMAIL y ADMIN_PASSWORD en services/.env (o en el entorno) y ejecuta:
-set -a && . ./.env && set +a && uv run python seed_admin.py
+# Primer admin (el registro público crea siempre rol "user").
+# Las credenciales se pasan solo en la terminal; no se guardan en ningún archivo:
+ADMIN_EMAIL=<tu-email> ADMIN_PASSWORD=<contraseña-de-8+> uv run python seed_admin.py
+# PowerShell: $env:ADMIN_EMAIL="<tu-email>"; $env:ADMIN_PASSWORD="<contraseña>"; uv run python seed_admin.py
 
 # Levantar la API en el puerto 8000
 uv run fastapi dev main.py --host 0.0.0.0 --port 8000

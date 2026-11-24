@@ -92,7 +92,7 @@ services/                          # TrackFlow API: un único servicio FastAPI
 ├── main.py                        # crea FastAPI(), registra CORS y los routers; sin lógica
 ├── config.py                      # Settings (pydantic-settings) + get_settings() cacheado
 ├── database.py                    # engine SQLModel (Postgres/Supabase) + get_db; cliente TinyDB
-├── dependencies.py                # dependencias compartidas: DbDep, usuario actual, require_role(...)
+├── dependencies.py                # dependencias compartidas: DbDep, usuario actual, require_roles(...)
 ├── models.py                      # tablas SQLModel: SKU, StockEntry, StockExit (nombres del briefing)
 ├── schemas.py                     # contratos Pydantic: entrada (con validadores) y salida (SKURead + current_stock)
 ├── routers/                       # CAPA API: un APIRouter por dominio
@@ -163,7 +163,7 @@ services/                          # TrackFlow API: un único servicio FastAPI
 
 | Dominio | Router | Cuándo | Qué cambia |
 |---|---|---|---|
-| Autenticación | `routers/auth.py` → `/auth`, `routers/users.py` → `/users`, `routers/profiles.py` → `/profiles` | Proyecto "Asegurando la API" (#18), **antes** del Hito 5 | `User` y `Profile` en TinyDB; JWT con el `id` del usuario; `get_current_user`. Roles del proyecto: `admin`, `manager`, `user`. Los permisos por rol en cada ruta son una extensión opcional (`require_role(...)`) |
+| Autenticación | `routers/auth.py` → `/auth`, `routers/users.py` → `/users`, `routers/profiles.py` → `/profiles` | Proyecto "Asegurando la API" (#18), **antes** del Hito 5 | `User` y `Profile` en TinyDB; JWT con el `id` del usuario; `get_current_user`. Roles del proyecto: `admin`, `manager`, `user`. Los permisos por rol en cada ruta son una extensión opcional (`require_roles(...)`) |
 | Plataforma | `routers/health.py` → `/health` | Hito 5 | Estado de la API y de las dos persistencias, para monitorización 24/7 |
 | Leads comerciales | `routers/leads.py` → `/leads` | Sin fecha | Conectaría el formulario del Hito 1, que hoy simula el envío. Requiere su tabla y una decisión sobre datos personales (RGPD): `TODO(briefing)` |
 | Transportistas, devoluciones, seguimiento | `routers/carriers.py`, `returns.py`, `tracking.py` | Sin briefing todavía | Router y módulo de dominio nuevos, **sin modificar los existentes** |
@@ -179,7 +179,7 @@ FastAPI genera el esquema **OpenAPI** (`/openapi.json`) y la documentación inte
 | Convención | Fuente | Cómo se aplica aquí |
 |---|---|---|
 | Rutas en módulos con `APIRouter` (`prefix`, `tags`, `dependencies`) registrados en `main.py` con `include_router`; estructura `app/main.py`, `app/dependencies.py`, `app/routers/*.py` | FastAPI, [*Bigger Applications — Multiple Files*](https://fastapi.tiangolo.com/tutorial/bigger-applications/) | `services/main.py`, `services/dependencies.py`, `services/routers/<dominio>.py` |
-| Dependency injection con `Depends` para lo compartido | FastAPI, [*Dependencies*](https://fastapi.tiangolo.com/tutorial/dependencies/) | `dependencies.py`: sesión, usuario y `require_role(...)`. Las dependencias que **devuelven** algo (usuario, sesión) se declaran en el endpoint; las de solo control se pueden poner a nivel de router |
+| Dependency injection con `Depends` para lo compartido | FastAPI, [*Dependencies*](https://fastapi.tiangolo.com/tutorial/dependencies/) | `dependencies.py`: sesión, usuario y `require_roles(...)`. Las dependencias que **devuelven** algo (usuario, sesión) se declaran en el endpoint; las de solo control se pueden poner a nivel de router |
 | Configuración con `BaseSettings` de `pydantic-settings`, `.env` con `SettingsConfigDict(env_file=".env")` y `get_settings()` con `@lru_cache`, sobreescribible en tests | FastAPI, [*Settings and Environment Variables*](https://fastapi.tiangolo.com/advanced/settings/) | `config.py`: nada de `os.getenv` disperso |
 | SQLModel como ORM; una sesión por petición con una dependencia que hace `yield`; modelos separados para la **tabla** y para la **entrada y salida** (`HeroBase`/`Hero`/`HeroCreate`/`HeroPublic`); el `id` lo decide el backend | FastAPI, [*SQL (Relational) Databases*](https://fastapi.tiangolo.com/tutorial/sql-databases/) | `database.py` (`get_db` con `yield`), `models.py` (tablas) frente a `schemas.py` (contratos). `current_stock` solo existe en el schema de respuesta, como pide el briefing |
 | Plantilla full-stack oficial: `backend/app/` con `api/routes/` (un archivo por recurso) y `core/` (`config.py`, `db.py`, `security.py`), con `frontend/` como app aparte en el mismo repo | [fastapi/full-stack-fastapi-template](https://github.com/fastapi/full-stack-fastapi-template) | Confirma el **monorepo con frontend y backend separados** (`uis/` + `services/`) y la separación de configuración, seguridad y rutas. Nos apartamos en el prefijo `/api/v1` (§4) |
@@ -246,6 +246,7 @@ En Codespaces la web y la API tienen **orígenes distintos**: `https://<codespac
 | `TINYDB_PATH` | API → usuarios | `services/.data/users.json` (ignorada por git) |
 | `CORS_ORIGINS` | API | `http://localhost:3000,http://localhost:3001` |
 | `SECRET_KEY` | API → tokens (hitos de auth) | `cambia-esto-en-local` |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | API → caducidad del token (#18) | `60` |
 
 - Los valores reales van en `services/.env` (ignorado por git) o en **Codespaces secrets**. `.env.example` solo lleva nombres con valores ficticios (regla [`dependencias-y-secretos`](../.agents/rules/dependencias-y-secretos.md)).
 - La **clave de servicio de Supabase** y `DATABASE_URL` solo las conoce `services/`. Ningún frontend recibe credenciales de base de datos.
